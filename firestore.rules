@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    function isValidUser(data) {
+      return data.keys().hasAll(['points']) &&
+             data.points is number;
+    }
+    function isValidWord(data) {
+      return data.keys().hasAll(['word', 'translation']) &&
+             data.word is string && data.word.size() < 500 &&
+             data.translation is string && data.translation.size() < 500;
+    }
+    function isValidGrammar(data) {
+      return data.keys().hasAll(['title', 'content']) &&
+             data.title is string && data.title.size() < 500 &&
+             data.content is string && data.content.size() < 20000;
+    }
+
+    // User Profile
+    match /users/{userId}/userdata/progress {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Word Bank
+    match /users/{userId}/wordbank/{wordId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Grammar Bank
+    match /users/{userId}/grammarbank/{ruleId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Studio / Notion Workspace
+    match /users/{userId}/studio/{docId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // Whiteboard
+    match /users/{userId}/whiteboard/{docId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+  }
+}

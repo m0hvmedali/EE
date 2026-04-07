@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user progress and points.",
+      "type": "object",
+      "properties": {
+        "points": { "type": "number", "description": "Total points earned." },
+        "lastActive": { "type": "string", "format": "date-time", "description": "Last activity timestamp." }
+      },
+      "required": ["points"]
+    },
+    "Word": {
+      "title": "Vocabulary Word",
+      "description": "A word analyzed by AI.",
+      "type": "object",
+      "properties": {
+        "word": { "type": "string" },
+        "translation": { "type": "string" },
+        "synonyms": { "type": "array", "items": { "type": "string" } },
+        "antonym": { "type": "string" },
+        "sentence": { "type": "string" },
+        "mnemonic": { "type": "string" },
+        "emoji": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["word", "translation"]
+    },
+    "GrammarRule": {
+      "title": "Grammar Rule",
+      "description": "A summarized grammar rule.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "feedback": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content"]
+    },
+    "WhiteboardState": {
+      "title": "Whiteboard State",
+      "description": "The state of the tldraw whiteboard.",
+      "type": "object",
+      "properties": {
+        "snapshot": { "type": "object", "description": "The tldraw snapshot JSON." },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}/userdata/progress": {
+      "schema": "UserProfile",
+      "description": "User progress tracking."
+    },
+    "/users/{userId}/wordbank/{wordId}": {
+      "schema": "Word",
+      "description": "User's saved vocabulary."
+    },
+    "/users/{userId}/grammarbank/{ruleId}": {
+      "schema": "GrammarRule",
+      "description": "User's saved grammar summaries."
+    },
+    "/users/{userId}/whiteboard/current": {
+      "schema": "WhiteboardState",
+      "description": "User's interactive mind map state."
+    }
+  }
+}
